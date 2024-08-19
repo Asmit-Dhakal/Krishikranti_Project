@@ -5,13 +5,16 @@ from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
-class Cart(APIView):
-    permission_classes = (IsAuthenticated,)
+class CartView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request):
-        pass
+        user=request.user
+        print(user)
+        return Response({'success':'permission working'})
 
     def post(self, request):
-        pass
+        user=request.user
+        cart
 
     def update(self, request):
         pass
@@ -20,3 +23,6 @@ class Cart(APIView):
         pass
 
 
+class DemoView(APIView):
+    def get(self, request):
+        pass

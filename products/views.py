@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 from products.models import Product, Category
 from products.serializers import ProductSerializer, CategorySerializer
@@ -29,3 +30,10 @@ class ProductView(APIView):
             return Response({'message': 'No products found'}, status=404)  # HTTP 404 Not Found
 
         return Response({'count': len(serializer.data), 'data': serializer.data})
+
+
+class DemoView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        print(request.user)
+        return Response({'success': 'Hurray you are authenticated!'})
