@@ -10,7 +10,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)  # Nested serializer to include category details
-
     class Meta:
         model = Product
         #fields = '__all__'
