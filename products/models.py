@@ -2,8 +2,7 @@ from django.db import models
 
 # Create your models here.
 from django.db import models
-
-
+from seller.models import Seller
 # Create your models here.
 
 class Category(models.Model):
@@ -21,6 +20,7 @@ class Product(models.Model):
     product_description = models.TextField()
     product_image = models.ImageField(upload_to='shop/images')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE, blank=True, null=True )
 
     def __str__(self):
         return self.product_name

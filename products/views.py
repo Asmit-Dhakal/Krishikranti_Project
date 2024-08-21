@@ -11,6 +11,9 @@ class ProductView(APIView):
         category = request.query_params.get('category')
         search = request.query_params.get('search')
 
+        print(f"Category Name: {category}")
+        print(f"Search Term: {search}")
+
         # Start with a base queryset
         queryset = Product.objects.all()
 

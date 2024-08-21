@@ -7,6 +7,7 @@ from products.models import Product
 from .serializers import *
 
 
+
 # Create your views here.
 class CartView(APIView):
     permission_classes = [IsAuthenticated]
@@ -53,6 +54,18 @@ class CartView(APIView):
         serializer = CartItemsSerializer(queryset, many=True)
         return Response(serializer.data)
 
+class OrderAPIView(APIView):
+    def get(self, request):
+        queryset=Order.objects.filter(user=request.user)
+        serializer = OrderSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+            serializer = OrderSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save(user=request.user)  # Associate the order with the current user
+                return Response(serializer.data, )
+            return Response({'error': serializer.errors}, status=400)
 
 
 class DemoView(APIView):
