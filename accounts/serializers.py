@@ -45,10 +45,35 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
+
 class UserProfileSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(source='user.first_name', write_only=True)
+    last_name = serializers.CharField(source='user.last_name', write_only=True)
+    email = serializers.EmailField(source='user.email', read_only=True)
+    username = serializers.CharField(source='user.username', read_only=True)
+
     class Meta:
         model = UserProfile
-        fields = ['address', 'phone_number']
+        fields = ['username', 'email', 'first_name', 'last_name', 'address', 'phone_number']
+
+    def update(self, instance, validated_data):
+        user = instance.user
+
+        # Update user fields
+        if 'user' in validated_data:
+            user_data = validated_data.pop('user')
+            if 'first_name' in user_data:
+                user.first_name = user_data['first_name']
+            if 'last_name' in user_data:
+                user.last_name = user_data['last_name']
+            user.save()
+
+        # Update profile fields
+        instance.address = validated_data.get('address', instance.address)
+        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
+
+        instance.save()
+        return instance
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(write_only=True)
