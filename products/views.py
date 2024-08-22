@@ -11,27 +11,21 @@ class ProductView(APIView):
         category = request.query_params.get('category')
         search = request.query_params.get('search')
 
-        print(f"Category Name: {category}")
-        print(f"Search Term: {search}")
-
-        # Start with a base queryset
+        # Start with a base queryset (all products)
         queryset = Product.objects.all()
 
-        # Filter by category if provided
+        # Apply filtering based on category
         if category:
             queryset = queryset.filter(category__category_name=category)
 
-        # Filter by search term if provided
+        # Apply filtering based on search term
         if search:
             queryset = queryset.filter(product_name__icontains=search)  # Use icontains for case-insensitive search
 
-        # Serialize the filtered queryset
+        # Serialize the (filtered) queryset
         serializer = ProductSerializer(queryset, many=True)
 
-        # Check if no products are found
-        if not serializer.data:
-            return Response({'message': 'No products found'}, status=404)  # HTTP 404 Not Found
-
+        # Return all products if no filters are applied or after applying filters
         return Response({'count': len(serializer.data), 'data': serializer.data})
 
 

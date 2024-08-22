@@ -5,4 +5,4 @@ from .models import Seller
 class SellerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seller
-        fields = ['id', 'store_name']
+        fields = ['id']

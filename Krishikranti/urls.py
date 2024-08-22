@@ -26,7 +26,7 @@ urlpatterns = [
     path('api/users',include('users.urls')),
     path('predict/', include('ml.urls')),
     path('api/accounts/', include('accounts.urls')),
-    path('api/', include('seller.urls')),
+    path('api/seller/', include('seller.urls')),
     path('api/',include('accounts.urls')),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
