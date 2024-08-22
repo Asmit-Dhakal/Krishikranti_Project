@@ -16,7 +16,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'password', 'password2', 'first_name', 'last_name', 'address', 'phone_number']
         extra_kwargs = {
             'password': {'write_only': True},
-            'email': {'required': True, 'validators': [UniqueValidator(queryset=User.objects.all())]},
+            'email': {'required': True},
             'address': {'required': True},
             'phone_number': {'required': True}
         }
@@ -57,11 +57,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'first_name', 'last_name', 'address', 'phone_number']
 
     def update(self, instance, validated_data):
-        user = instance.user
-
-        # Update user fields
-        if 'user' in validated_data:
-            user_data = validated_data.pop('user')
+        # Extract user data
+        user_data = validated_data.pop('user', None)
+        if user_data:
+            user = instance.user
+            # Update user fields
             if 'first_name' in user_data:
                 user.first_name = user_data['first_name']
             if 'last_name' in user_data:
@@ -74,6 +74,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(write_only=True)

@@ -1,4 +1,6 @@
-from django.contrib.auth import authenticate
+from tokenize import TokenError
+
+from django.contrib.auth import authenticate, logout
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -34,40 +36,43 @@ class LoginAPIView(APIView):
         if user is not None:
             refresh = RefreshToken.for_user(user)
             return Response({
-                'access': str(refresh.access_token)
+                'access': str(refresh.access_token),
+                'refresh': str(refresh)
             }, status=status.HTTP_200_OK)
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
+
 class LogoutAPIView(APIView):
     def post(self, request):
-        refresh_token = request.data.get('refresh')
-        if refresh_token:
-            try:
-                token = RefreshToken(refresh_token)
-                token.blacklist()  # Blacklist the refresh token
-                return Response({'message': 'Logged out successfully'}, status=status.HTTP_205_RESET_CONTENT)
-            except Exception as e:
-                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({'error': 'Refresh token required'}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class UserProfileAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
         user = request.user
+        if user.is_authenticated:
+            logout(request)  # Django's logout method will clear the session
+            return Response({'message': 'Logged out successfully'}, status=status.HTTP_205_RESET_CONTENT)
+        return Response({'error': 'User not authenticated'}, status=status.HTTP_400_BAD_REQUEST)
+
+class UserProfileView(APIView):
+    def get(self, request):
+        # Get the current authenticated user
+        user = request.user
+        # Get or create a UserProfile instance for the user
         profile, created = UserProfile.objects.get_or_create(user=user)
+        # Serialize the profile
         serializer = UserProfileSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request):
+        # Get the current authenticated user
         user = request.user
+        # Get or create a UserProfile instance for the user
         profile, created = UserProfile.objects.get_or_create(user=user)
+        # Deserialize the data to update the profile
         serializer = UserProfileSerializer(profile, data=request.data, partial=True)
         if serializer.is_valid():
+            # Save the updated profile
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ChangePasswordAPIView(APIView):
     permission_classes = [IsAuthenticated]

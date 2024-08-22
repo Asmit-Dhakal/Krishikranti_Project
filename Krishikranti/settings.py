@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'userprofile_management.apps.UserprofileManagementConfig',
     'cart.apps.CartConfig',
     'ml.apps.MlConfig',
@@ -59,7 +60,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-ALLOWED_HOSTS = ['192.168.1.96']
+ALLOWED_HOSTS = ['192.168.1.96','localhost','127.0.0.1','192.168.100.171']
 ROOT_URLCONF = 'Krishikranti.urls'
 
 TEMPLATES = [
