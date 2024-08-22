@@ -60,7 +60,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-ALLOWED_HOSTS = ['192.168.1.96','localhost','127.0.0.1','192.168.100.171']
+ALLOWED_HOSTS = ['192.168.1.96','localhost','127.0.0.1','192.168.100.171','192.168.176.22','192.168.1.67','192.168.1.254']
 ROOT_URLCONF = 'Krishikranti.urls'
 
 TEMPLATES = [
@@ -86,7 +86,7 @@ REST_FRAMEWORK = {
     )
 }
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=100),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,

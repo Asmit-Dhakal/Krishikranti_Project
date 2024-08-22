@@ -20,10 +20,20 @@ classes = {
     5: 'narrow_brown_spot'
 }
 
-# Normalization for validation
+# Normalization statistics
 stats = ((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
+
+# Data augmentation and normalization for training
+train_tfms = tt.Compose([
+    tt.Resize((256,256)),  # Resize images to 256*256 pixels
+    tt.RandomHorizontalFlip(),
+    tt.ToTensor(),
+    tt.Normalize(*stats, inplace=True)
+])
+
+# Normalization for validation
 valid_tfms = tt.Compose([
-    tt.Resize((32, 32)),  # Resize images to 32x32 pixels
+    tt.Resize((256,256)),  # Resize images to 256*256 pixels
     tt.ToTensor(),
     tt.Normalize(*stats)
 ])
