@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'ml.apps.MlConfig',
     'accounts.apps.AccountsConfig',
     'seller.apps.SellerConfig',
+      'password_reset.apps.PasswordResetConfig',
 ]
 
 MIDDLEWARE = [
@@ -60,7 +61,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-ALLOWED_HOSTS = ['192.168.1.96','localhost','127.0.0.1','192.168.100.171','192.168.176.22','192.168.1.67','192.168.1.254']
+ALLOWED_HOSTS = ['192.168.1.96','localhost','127.0.0.1','192.168.100.171','192.168.176.22','192.168.1.67','192.168.1.254','192.168.1.83','192.168.1.129','192.168.1.110']
 ROOT_URLCONF = 'Krishikranti.urls'
 
 TEMPLATES = [

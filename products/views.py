@@ -1,10 +1,7 @@
-from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-
-from products.models import Product, Category
-from products.serializers import ProductSerializer, CategorySerializer
+from .models import Product
+from .serializers import ProductSerializer
 
 class ProductView(APIView):
     def get(self, request):
@@ -20,17 +17,10 @@ class ProductView(APIView):
 
         # Apply filtering based on search term
         if search:
-            queryset = queryset.filter(product_name__icontains=search)  # Use icontains for case-insensitive search
+            queryset = queryset.filter(product_name__icontains=search)  # Case-insensitive search
 
-        # Serialize the (filtered) queryset
-        serializer = ProductSerializer(queryset, many=True)
+        # Serialize the (filtered) queryset with request context
+        serializer = ProductSerializer(queryset, many=True, context={'request': request})
 
         # Return all products if no filters are applied or after applying filters
         return Response({'count': len(serializer.data), 'data': serializer.data})
-
-
-class DemoView(APIView):
-    permission_classes = [IsAuthenticated]
-    def get(self, request):
-        print(request.user)
-        return Response({'success': 'Hurray you are authenticated!'})

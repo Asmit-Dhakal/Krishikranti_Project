@@ -4,8 +4,6 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from products.models import Product
 from products.serializers import ProductSerializer
-from .serializers import SellerSerializer
-
 
 class SellerProductView(APIView):
     permission_classes = [IsAuthenticated]
@@ -14,23 +12,23 @@ class SellerProductView(APIView):
         if pk:
             try:
                 product = Product.objects.get(pk=pk, seller=request.user)
-                serializer = ProductSerializer(product)
+                serializer = ProductSerializer(product, context={'request': request})
                 return Response(serializer.data)
             except Product.DoesNotExist:
                 return Response({'error': 'Product not found or not owned by this user'},
                                 status=status.HTTP_404_NOT_FOUND)
         else:
             products = Product.objects.filter(seller=request.user)
-            serializer = ProductSerializer(products, many=True)
+            serializer = ProductSerializer(products, many=True, context={'request': request})
             return Response(serializer.data)
 
     def post(self, request):
-        serializer = ProductSerializer(data=request.data)
+        serializer = ProductSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             product = serializer.save(seller=request.user)
             response_data = {
                 'message': 'Product successfully added',
-                'product': ProductSerializer(product).data
+                'product': ProductSerializer(product, context={'request': request}).data
             }
             return Response(response_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -42,7 +40,7 @@ class SellerProductView(APIView):
             return Response({'error': 'Product not found or not owned by this user'},
                             status=status.HTTP_404_NOT_FOUND)
 
-        serializer = ProductSerializer(product, data=request.data, partial=True)
+        serializer = ProductSerializer(product, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -57,11 +55,3 @@ class SellerProductView(APIView):
 
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-# Example of usage in URLs
-#from django.urls import path
-
- #urlpatterns = [
-  #  path('api/seller/register/', SellerRegistrationView.as_view(), name='register-seller'),
-   ##path('api/seller/products/<int:pk>/', SellerProductView.as_view(), name='seller-product-detail'),
-#]
